@@ -2,36 +2,32 @@
 
 var QUIZ_AVAILABLE_SECONDS = 9;
 var secondsLeft = QUIZ_AVAILABLE_SECONDS;
-var timer;
-var newQuestion;
-var NUMBER_LIMIT = 10;
-// var firstTimeCorrect = true
+var timer; // reference to timer
+var currentQuestion; // store current question
+var NUMBER_LIMIT = 50; // initial number limit
 
 $(document).ready(function(){
-  // setTimeout(function(){
-  //   console.log('4 seconds have passed');
-  // }, 1000)
 
-  $(function() {
-    $( "#slider-range-max" ).slider({
-      range: "max",
-      min: 1,
-      max: 100,
-      value: 10,
-      slide: function( event, ui ) {
-        $( "#number-limit" ).val( ui.value );
-        NUMBER_LIMIT = ui.value;
-        newQuestion = makeNewQuestion();
-      }
-    });
-    $( "#number-limit" ).val( $( "#slider-range-max" ).slider( "value" ) );
+  // define slider for number range
+  $('#slider-number-range').slider({
+    range: 'max',
+    min: 1,
+    max: 100,
+    value: 50,
+    slide: function(event, ui) {
+      $('#number-limit').text(ui.value);
+      NUMBER_LIMIT = ui.value;
+      currentQuestion = makeNewQuestion();
+    }
   });
+  // show number in number range
+  $('#number-limit').text($('#slider-number-range').slider('value'));
   
   // Function to generate random numbers
   function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
-
+  // short hand for generating random numbers
   var rand = getRandomInt;
 
   var generateQuestion = function(){
@@ -39,61 +35,112 @@ $(document).ready(function(){
       return rand(a, b) + operator + rand(a, b)
     };
 
+    function generateQuestionEval(a, b, operator){
+      return rand(a, b) + operator + rand(a, b)
+    };
+
     function additionQuestion(a, b) {
-      return generateQuestionText(a, b, '+');
+      var question = generateQuestionText(a, b, ' + ');
+      return {'information': question,
+              'eval': question};
     }
 
-    return additionQuestion(1,NUMBER_LIMIT)
+    function subtractionQuestion(a, b) {
+      var question = generateQuestionText(a, b, ' - ');
+      return {'information': question,
+              'eval': question};
+    }
+
+    function multiplicationQuestion(a, b) {
+      var question = generateQuestionText(a, b, ' x ');
+      return {'information': question,
+              'eval': question.replace('x','*')};
+    }
+
+    function divisionQuestion(a, b) {
+      var dividend = 1 + rand(Math.sqrt(a), Math.sqrt(b));
+      var denominator = 1 + rand(Math.sqrt(a), Math.sqrt(b));
+
+      var multiple = dividend * denominator;
+
+      return {'information': multiple + ' / ' + denominator,
+              'eval': multiple + '/' + denominator};
+    }
+
+    function squareQuestion(a, b){
+      var x = rand(Math.sqrt(a), Math.sqrt(b));
+
+      return {'information': x + '²',
+              'eval': Math.pow(x,2)};
+    }
+
+    function squareRootQuestion(a, b){
+      var x = rand(Math.sqrt(a), Math.sqrt(b));
+      var y = x*x;
+
+      return {'information': '√' + y,
+              'eval': x};
+    }
+
+    // TODO: random selection
+    return squareRootQuestion(1,NUMBER_LIMIT)
   }
 
+  // create new question
   function makeNewQuestion(){
     var question = generateQuestion();
-    $('#question').text(question);
+    $('#question').text(question.information);
     return question;
   }; 
 
-  newQuestion = makeNewQuestion();
+  // Initialize with a question
+  currentQuestion = makeNewQuestion();
 
+  // Resetting the timer with new time every 1 second
   var resetTimer = function(){
     timer = window.setInterval(function(){ 
+      // Decrement every second
       secondsLeft = Number(secondsLeft) - 1;
 
       $('#clock').text(secondsLeft);
 
+      // Check if game is over
       if (secondsLeft == 0){
         clearInterval(timer);
-        $('#clock').text('Game Over');
-        $('#answer').hide();
+        $('#answer').parent().html('<h1>Game Over</h1>');
       }
 
     }, 1000)
   };
 
+  var getNewTime = function(){
+    var oldTime = secondsLeft;
+    var newTime = Math.ceil(oldTime) + 1;
+    secondsLeft = newTime;
+  };
+
+  // Listen to answers
   $('#answer').keyup(function(){
     // check if answer is correct
-    if ($('#answer').val() == eval(newQuestion))
-    {
+    if ($('#answer').val() == eval(currentQuestion.eval)){
+      // Stop timer
       window.clearInterval(timer);
 
-      var oldTime = secondsLeft;
-      var newTime = Math.ceil(oldTime) + 1;
-      secondsLeft = newTime;
+      // Compute new time
+      getNewTime();
 
+      // Update clock on UI
       $('#clock').text(secondsLeft);
 
-      resetTimer();
-
-      newQuestion = makeNewQuestion();
+      // Create new question
+      currentQuestion = makeNewQuestion();
       $('#answer').val('');
+
+      // Restart timer
+      resetTimer();
     }else{
       console.log('answer is wrong');
     }
   })
 
 });
-
-// for (var name in myObject) {
-//   if (myObject.hasOwnProperty(name)) {
-//     alert(name);
-//   }
-// }

@@ -1,0 +1,10 @@
+body{
+  background-color: #333330;
+  color: #bfbfbb;
+}
+
+#answer{
+  background-color: #333330;
+  border: 0px;
+  border-bottom: 5px solid white;
+}
