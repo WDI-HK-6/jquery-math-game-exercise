@@ -30,7 +30,27 @@ $(document).ready(function(){
   // short hand for generating random numbers
   var rand = getRandomInt;
 
+  function chooseFormula(){
+    var formulaArray = [];
+
+    // find checked options and added to array
+    $('.option-box').each(function(){
+      if ($(this).prop('checked')){
+        var elementId = $(this).attr('id');
+        formulaArray.push(elementId);
+      }
+    });
+
+    // randomize index
+    var index = rand(0, formulaArray.length - 1);
+    // console.log(formulaArray[index]);
+    return formulaArray[index];
+  }
+
   var generateQuestion = function(){
+
+    var formula;
+
     function generateQuestionText(a, b, operator){
       return rand(a, b) + operator + rand(a, b)
     };
@@ -39,52 +59,61 @@ $(document).ready(function(){
       return rand(a, b) + operator + rand(a, b)
     };
 
-    function additionQuestion(a, b) {
-      var question = generateQuestionText(a, b, ' + ');
-      return {'information': question,
-              'eval': question};
-    }
+    switch(chooseFormula()){
+      case 'addition':
+        formula = function additionQuestion(a, b) {
+          var question = generateQuestionText(a, b, ' + ');
+          return {'information': question,
+                  'eval': question};
+        };
+        break;
+      case 'subtraction':
+        formula = function subtractionQuestion(a, b) {
+          var question = generateQuestionText(a, b, ' - ');
+          return {'information': question,
+                  'eval': question};
+        };
+        break;
+      case 'multiplication':
+        formula = function multiplicationQuestion(a, b) {
+          var question = generateQuestionText(a, b, ' x ');
+          return {'information': question,
+                  'eval': question.replace('x','*')};
+        };
+        break;
+      case 'division':
+        formula = function divisionQuestion(a, b) {
+          var dividend = 1 + rand(Math.sqrt(a), Math.sqrt(b));
+          var denominator = 1 + rand(Math.sqrt(a), Math.sqrt(b));
 
-    function subtractionQuestion(a, b) {
-      var question = generateQuestionText(a, b, ' - ');
-      return {'information': question,
-              'eval': question};
-    }
+          var multiple = dividend * denominator;
 
-    function multiplicationQuestion(a, b) {
-      var question = generateQuestionText(a, b, ' x ');
-      return {'information': question,
-              'eval': question.replace('x','*')};
-    }
+          return {'information': multiple + ' / ' + denominator,
+                  'eval': multiple + '/' + denominator};
+        };
+        break;
+      case 'square':
+        formula = function squareQuestion(a, b){
+          var x = rand(Math.sqrt(a), Math.sqrt(b));
 
-    function divisionQuestion(a, b) {
-      var dividend = 1 + rand(Math.sqrt(a), Math.sqrt(b));
-      var denominator = 1 + rand(Math.sqrt(a), Math.sqrt(b));
+          return {'information': x + '²',
+                  'eval': Math.pow(x,2)};
+        };
+        break;
+      case 'sqrt':
+        formula = function squareRootQuestion(a, b){
+          var x = rand(Math.sqrt(a), Math.sqrt(b));
+          var y = x*x;
 
-      var multiple = dividend * denominator;
-
-      return {'information': multiple + ' / ' + denominator,
-              'eval': multiple + '/' + denominator};
-    }
-
-    function squareQuestion(a, b){
-      var x = rand(Math.sqrt(a), Math.sqrt(b));
-
-      return {'information': x + '²',
-              'eval': Math.pow(x,2)};
-    }
-
-    function squareRootQuestion(a, b){
-      var x = rand(Math.sqrt(a), Math.sqrt(b));
-      var y = x*x;
-
-      return {'information': '√' + y,
-              'eval': x};
+          return {'information': '√' + y,
+                  'eval': x};
+        };
+        break;
     }
 
     // TODO: random selection
-    return squareRootQuestion(1,NUMBER_LIMIT)
-  }
+    return formula(1,NUMBER_LIMIT)
+  };
 
   // create new question
   function makeNewQuestion(){
