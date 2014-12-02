@@ -22,22 +22,33 @@
     <!-- Custom CSS -->
     <link href="css/custom.css" rel="stylesheet">
   </head>
-  <body>
+  <body class="vertical-center">
     <div class="container">
       <div class="row">
         <div class="col-xs-12 text-center">
-          <h1>10 seconds of math</h1>
-
-          <h1>Timer: <span id="clock">10</span> seconds</h1>
+          <h1><span id="clock" style="font-size:60px;">10</span> seconds left</h1>
 
           <div style="font-size: 100px;"><span id="question"></span> </div>
-          <h1><input id="answer" placeholder="answer" class="text-center"></h1>
+          <h1><input id="answer" placeholder="answer" class="text-center col-xs-4 col-xs-offset-4"></h1>
+        
+        </div>
 
-          <div>
+        <div class="col-xs-8 col-xs-offset-2 navbar-fixed-bottom">
+          <div class="col-xs-2 col-xs-offset-4">
             <label for="amount">Number Limit: <span id="number-limit"></span></label>
             <div id="slider-number-range"></div>
           </div>
-        
+          <div class="col-xs-6">
+            <div>Options</div>
+            <div>
+              <input type="checkbox" id="addition">+
+              <input type="checkbox" id="subtraction">-
+              <input type="checkbox" id="multiplication">x
+              <input type="checkbox" id="division">/
+              <input type="checkbox" id="square">²
+              <input type="checkbox" id="sqrt">√
+            </div>
+          </div>
         </div>
       </div>
     </div>
