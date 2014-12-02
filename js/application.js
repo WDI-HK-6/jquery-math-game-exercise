@@ -1,9 +1,10 @@
 'use strict';
 
-var QUIZ_AVAILABLE_SECONDS = 10;
+var QUIZ_AVAILABLE_SECONDS = 9;
 var secondsLeft = QUIZ_AVAILABLE_SECONDS;
 var timer;
 var newQuestion;
+var NUMBER_LIMIT = 10;
 // var firstTimeCorrect = true
 
 $(document).ready(function(){
@@ -11,6 +12,22 @@ $(document).ready(function(){
   //   console.log('4 seconds have passed');
   // }, 1000)
 
+  $(function() {
+    $( "#slider-range-max" ).slider({
+      range: "max",
+      min: 1,
+      max: 100,
+      value: 10,
+      slide: function( event, ui ) {
+        $( "#number-limit" ).val( ui.value );
+        NUMBER_LIMIT = ui.value;
+        newQuestion = makeNewQuestion();
+      }
+    });
+    $( "#number-limit" ).val( $( "#slider-range-max" ).slider( "value" ) );
+  });
+  
+  // Function to generate random numbers
   function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
@@ -26,11 +43,16 @@ $(document).ready(function(){
       return generateQuestionText(a, b, '+');
     }
 
-    return additionQuestion(1,2)
+    return additionQuestion(1,NUMBER_LIMIT)
   }
 
-  newQuestion = generateQuestion();
-  $('#question').text(newQuestion);
+  function makeNewQuestion(){
+    var question = generateQuestion();
+    $('#question').text(question);
+    return question;
+  }; 
+
+  newQuestion = makeNewQuestion();
 
   var resetTimer = function(){
     timer = window.setInterval(function(){ 
@@ -61,8 +83,7 @@ $(document).ready(function(){
 
       resetTimer();
 
-      newQuestion = generateQuestion();
-      $('#question').text(newQuestion);
+      newQuestion = makeNewQuestion();
       $('#answer').val('');
     }else{
       console.log('answer is wrong');
