@@ -24,3 +24,10 @@ body{
 .option-box{
   margin: 0 20px 0 20px;
 }
+
+#btc{
+  position: absolute;
+  width: 10%;
+  float: left;
+  display: none;
+}

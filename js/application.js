@@ -8,6 +8,25 @@ var NUMBER_LIMIT = 50; // initial number limit
 
 $(document).ready(function(){
 
+  // Initialize Ion sound
+  ion.sound({
+    sounds: [
+        {
+            name: "beer_can_opening"
+        }
+    ],
+    volume: 0.5,
+    path: "js/ion/sounds/",
+    preload: true
+  });
+
+  function btcAnimation(){
+    $('#btc').show().css({'left': '0px', 'top': '0px'});
+    $('#btc').animate({left:'30%', top:'30%'}).fadeOut();
+
+    ion.sound.play("beer_can_opening");
+  }
+
   // define slider for number range
   $('#slider-number-range').slider({
     range: 'max',
@@ -167,6 +186,9 @@ $(document).ready(function(){
 
       // Restart timer
       resetTimer();
+
+      // Animation
+      btcAnimation();
     }else{
       console.log('answer is wrong');
     }
