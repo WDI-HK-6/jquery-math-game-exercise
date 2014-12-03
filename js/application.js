@@ -179,8 +179,7 @@ $(document).ready(function(){
       // prompt("What's your name?")
       data: {'name': prompt("what's your name?"), 'score': totalScore},
       success: function(html){
-        // $('#answer').append(html.ranking);
-        alert("You're ranked top " + html.ranking + "%")
+        $('#question').text("You're ranked top " + (html.ranking*100).toFixed(2) + "%");
       }
     })
   }
