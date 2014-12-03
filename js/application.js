@@ -5,6 +5,7 @@ var secondsLeft = QUIZ_AVAILABLE_SECONDS;
 var timer; // reference to timer
 var currentQuestion; // store current question
 var NUMBER_LIMIT = 50; // initial number limit
+var totalScore = 0;
 
 $(document).ready(function(){
 
@@ -15,7 +16,7 @@ $(document).ready(function(){
             name: "beer_can_opening"
         }
     ],
-    volume: 0.5,
+    volume: 1,
     path: "js/ion/sounds/",
     preload: true
   });
@@ -155,7 +156,10 @@ $(document).ready(function(){
       // Check if game is over
       if (secondsLeft == 0){
         clearInterval(timer);
-        $('#answer').parent().html('<h1>Game Over</h1>');
+        $('#answer').parent().html('<h1 id="#answer">Game Over! You got '+totalScore+' correct!</h1>');
+
+        // Post score
+        postScore();
       }
 
     }, 1000)
@@ -166,6 +170,20 @@ $(document).ready(function(){
     var newTime = Math.ceil(oldTime) + 1;
     secondsLeft = newTime;
   };
+
+  // Post result to back end
+  function postScore(){
+    $.ajax({
+      type: 'POST',
+      url: 'https://stark-eyrie-2329.herokuapp.com/leaders/create',
+      // prompt("What's your name?")
+      data: {'name': prompt("what's your name?"), 'score': totalScore},
+      success: function(html){
+        // $('#answer').append(html.ranking);
+        alert("You're ranked top " + html.ranking + "%")
+      }
+    })
+  }
 
   // Listen to answers
   $('#answer').keyup(function(){
@@ -183,6 +201,9 @@ $(document).ready(function(){
       // Create new question
       currentQuestion = makeNewQuestion();
       $('#answer').val('');
+
+      // Increment total score
+      totalScore++;
 
       // Restart timer
       resetTimer();
