@@ -1,5 +1,7 @@
+// It give you an error when you don't declare the scope variables (local, global)
 'use strict';
 
+// Global variables
 var QUIZ_AVAILABLE_SECONDS = 9;
 var secondsLeft = QUIZ_AVAILABLE_SECONDS;
 var timer; // reference to timer
@@ -147,7 +149,7 @@ $(document).ready(function(){
 
   // Resetting the timer with new time every 1 second
   var resetTimer = function(){
-    timer = window.setInterval(function(){ 
+    timer = setInterval(function(){ 
       // Decrement every second
       secondsLeft = Number(secondsLeft) - 1;
 
@@ -180,7 +182,8 @@ $(document).ready(function(){
       data: {'name': prompt("what's your name?"), 'score': totalScore},
       success: function(html){
         $('#question').text("You're ranked top " + (html.ranking*100).toFixed(2) + "%");
-      }
+      },
+      error: function(){}
     })
   }
 

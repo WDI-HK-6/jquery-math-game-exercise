@@ -1,12 +1,14 @@
 body{
-  background-color: #333330;
-  color: #bfbfbb;
+  /*background-color: #333330;*/
+  background-color: #bfbfbb;
+  /*color: #bfbfbb;*/
+  color: #333330;
 }
 
 #answer{
-  background-color: #333330;
+  background-color: #bfbfbb;
   border: 0px;
-  border-bottom: 5px solid white;
+  border-bottom: 5px solid #333330;
 }
 
 .navbar-fixed-bottom{
